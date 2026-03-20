@@ -35,15 +35,13 @@ class LandingActivity : AppCompatActivity() {
             val moveDistance = (targetTop - currentTop).toFloat()
 
             binding.contentContainer.animate()
-                .alpha(0.2f)
-                .translationY(-24f)
-                .setDuration(260L)
+                .alpha(0.35f)
+                .translationY(-18f)
+                .setDuration(220L)
                 .start()
 
             binding.startButton.animate()
                 .translationY(moveDistance)
-                .scaleX(0.96f)
-                .scaleY(0.96f)
                 .setDuration(420L)
                 .withStartAction {
                     binding.startButton.text = getString(R.string.home_add_line)

@@ -39,29 +39,30 @@
             android:text="@string/landing_description"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="@color/text_secondary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:elevation="12dp"
+            android:minWidth="0dp"
+            android:paddingStart="28dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="28dp"
+            android:paddingBottom="14dp"
+            android:text="@string/landing_start"
+            android:textColor="@color/surface_background"
+            app:backgroundTint="@color/landing_button_bg"
+            app:cornerRadius="18dp"
+            app:rippleColor="@color/text_primary"
+            app:strokeColor="@color/landing_button_stroke"
+            app:strokeWidth="1dp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
-        android:elevation="12dp"
-        android:minWidth="0dp"
-        android:paddingStart="26dp"
-        android:paddingTop="14dp"
-        android:paddingEnd="26dp"
-        android:paddingBottom="14dp"
-        android:text="@string/landing_start"
-        app:backgroundTint="@color/surface_card_alt"
-        app:cornerRadius="18dp"
-        app:rippleColor="@color/brand_primary"
-        app:strokeColor="@color/card_stroke"
-        app:strokeWidth="1dp" />
 
 </LinearLayout>
