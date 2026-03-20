@@ -2,8 +2,10 @@ package com.mvnohopper.presentation.ui.add_edit
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.ArrayAdapter
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityAddEditBinding
@@ -23,6 +25,7 @@ class AddEditActivity : AppCompatActivity() {
         setupAppBar()
         setupOperatorDropdown()
         setupDefaultValues()
+        setupNumericFieldBehavior()
         setupListeners()
     }
 
@@ -80,6 +83,30 @@ class AddEditActivity : AppCompatActivity() {
         binding.operatorNameEditText.setAdapter(adapter)
     }
 
+    private fun setupNumericFieldBehavior() {
+        applyZeroClearBehavior(binding.promotionMonthsEditText)
+        applyZeroClearBehavior(binding.minContractMonthsEditText)
+        applyZeroClearBehavior(binding.earlyTerminationFeeEditText)
+        applyZeroClearBehavior(binding.monthlyFeeEditText)
+    }
+
+    private fun applyZeroClearBehavior(editText: EditText) {
+        editText.setOnFocusChangeListener { _, hasFocus ->
+            val currentValue = editText.text?.toString().orEmpty()
+            if (hasFocus && currentValue == "0") {
+                editText.setText("")
+            } else if (!hasFocus && currentValue.isBlank()) {
+                editText.setText("0")
+            }
+        }
+
+        editText.setOnClickListener {
+            if (editText.text?.toString() == "0") {
+                editText.setText("")
+            }
+        }
+    }
+
     private fun handleSave() {
         clearValidationErrors()
 
@@ -87,10 +114,20 @@ class AddEditActivity : AppCompatActivity() {
         if (invalidLayout != null) {
             invalidLayout.requestFocus()
             binding.formGuideTextView.text = getString(R.string.add_edit_validation_guide)
+            Snackbar.make(
+                binding.root,
+                getString(R.string.add_edit_validation_snackbar),
+                Snackbar.LENGTH_SHORT
+            ).show()
             return
         }
 
         binding.formGuideTextView.text = getString(R.string.add_edit_save_placeholder)
+        Snackbar.make(
+            binding.root,
+            getString(R.string.add_edit_save_snackbar),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     private fun clearValidationErrors() {

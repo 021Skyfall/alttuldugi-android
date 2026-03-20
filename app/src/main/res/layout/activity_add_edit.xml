@@ -45,8 +45,8 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/add_edit_operator_name"
                     android:inputType="none"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp" />
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

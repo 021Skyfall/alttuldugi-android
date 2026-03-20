@@ -19,9 +19,11 @@
     <string name="add_edit_monthly_fee">월 요금(원)</string>
     <string name="add_edit_reminder_offset_days">미리 알림 일수</string>
     <string name="add_edit_notes">메모</string>
-    <string name="add_edit_save_placeholder">입력 검증은 통과했습니다. 다음 단계에서 Room 저장과 목록 반영을 연결할 예정입니다.</string>
+    <string name="add_edit_save_placeholder">입력 검증은 통과했습니다. 아직 실제 저장 기능은 다음 단계에서 연결할 예정입니다.</string>
     <string name="add_edit_validation_guide">필수 입력값을 먼저 확인해주세요.</string>
     <string name="add_edit_required_error">값을 입력해주세요.</string>
+    <string name="add_edit_validation_snackbar">비어 있는 필수 항목을 먼저 입력해주세요.</string>
+    <string name="add_edit_save_snackbar">입력 검증은 통과했습니다. 실제 저장 기능은 아직 미구현입니다.</string>
     <string name="common_cancel">취소</string>
     <string name="common_save">저장</string>
     <string name="operator_option_kt">KT 알뜰폰</string>
