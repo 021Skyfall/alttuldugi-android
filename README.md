@@ -23,6 +23,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - 등록 화면에서 통신망/사용 통신업체명/요금제명 구조 반영
 - 필수값 검증과 기본값 정책 반영
 - 등록 화면 저장 기능과 홈 화면 건수 반영 연결
+- 홈 화면 하단에 등록된 요금제 조회 목록 추가
 - 아직 목록/수정/상세/알림 실제 기능은 구현 전
 
 ## 시작 방법
