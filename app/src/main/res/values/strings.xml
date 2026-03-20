@@ -7,7 +7,7 @@
     <string name="transition_home_cta">transition_home_cta</string>
     <string name="home_title">알뜰폰 메뚜기 관리</string>
     <string name="home_subtitle">회선 정보와 추천 해지일을 한 곳에서 관리합니다.</string>
-    <string name="home_line_count">등록된 요금제 수: %1$d</string>
+    <string name="home_line_count">total : %1$d</string>
     <string name="home_empty_state">아직 등록된 요금제가 없습니다.\n다음 단계에서 목록 화면을 더 다듬을 예정입니다.</string>
     <string name="home_ready_state">DB 연결은 준비되었습니다.\n이제 목록/등록/상세 화면을 이어서 구현하면 됩니다.</string>
     <string name="home_add_line">요금제 등록</string>

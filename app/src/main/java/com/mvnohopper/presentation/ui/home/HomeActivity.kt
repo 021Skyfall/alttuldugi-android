@@ -70,8 +70,7 @@ class HomeActivity : AppCompatActivity() {
         }
 
         val fadeTargets = listOf(
-            binding.titleTextView,
-            binding.subtitleTextView,
+            binding.topSpacerView,
             binding.lineCountTextView,
             binding.listTitleTextView,
             binding.emptyStateTextView,

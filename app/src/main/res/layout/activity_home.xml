@@ -7,37 +7,27 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <TextView
-        android:id="@+id/titleTextView"
+    <View
+        android:id="@+id/topSpacerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/home_title"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall" />
-
-    <TextView
-        android:id="@+id/subtitleTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="@string/home_subtitle"
-        android:textAppearance="?attr/textAppearanceBodyLarge" />
-
-    <TextView
-        android:id="@+id/lineCountTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_gravity="center_horizontal"
-        android:textAppearance="?attr/textAppearanceTitleMedium" />
+        android:layout_height="112dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/addLineButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
         android:text="@string/home_add_line"
         android:transitionName="@string/transition_home_cta" />
+
+    <TextView
+        android:id="@+id/lineCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/text_secondary" />
 
     <TextView
         android:id="@+id/listTitleTextView"
@@ -53,7 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:textAppearance="?attr/textAppearanceBodyMedium" />
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:textColor="@color/text_secondary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mobileServiceRecyclerView"
