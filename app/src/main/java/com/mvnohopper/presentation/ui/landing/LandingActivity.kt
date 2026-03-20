@@ -2,8 +2,8 @@ package com.mvnohopper.presentation.ui.landing
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.view.doOnPreDraw
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityLandingBinding
 import com.mvnohopper.presentation.ui.home.HomeActivity
@@ -28,30 +28,28 @@ class LandingActivity : AppCompatActivity() {
     private fun runLaunchAnimation() {
         isTransitionRunning = true
         binding.startButton.isEnabled = false
+        binding.contentContainer.animate()
+            .alpha(0.18f)
+            .translationY(-12f)
+            .setDuration(220L)
+            .start()
 
-        binding.root.doOnPreDraw {
-            val targetTop = resources.getDimensionPixelSize(R.dimen.landing_button_target_top)
-            val currentTop = binding.startButton.top
-            val moveDistance = (targetTop - currentTop).toFloat()
-
-            binding.contentContainer.animate()
-                .alpha(0.35f)
-                .translationY(-18f)
-                .setDuration(220L)
-                .start()
-
-            binding.startButton.animate()
-                .translationY(moveDistance)
-                .setDuration(420L)
-                .withStartAction {
-                    binding.startButton.text = getString(R.string.home_add_line)
+        binding.startButton.animate()
+            .translationYBy(-10f)
+            .setDuration(180L)
+            .withEndAction {
+                binding.startButton.text = getString(R.string.home_add_line)
+                val intent = Intent(this, HomeActivity::class.java).apply {
+                    putExtra(HomeActivity.EXTRA_ANIMATE_ENTRY, true)
                 }
-                .withEndAction {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-                    finish()
-                }
-                .start()
-        }
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this,
+                    binding.startButton,
+                    getString(R.string.transition_home_cta)
+                )
+                startActivity(intent, options.toBundle())
+                finish()
+            }
+            .start()
     }
 }

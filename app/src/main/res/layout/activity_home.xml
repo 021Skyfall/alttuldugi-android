@@ -36,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal"
-        android:text="@string/home_add_line" />
+        android:text="@string/home_add_line"
+        android:transitionName="@string/transition_home_cta" />
 
     <TextView
         android:id="@+id/listTitleTextView"

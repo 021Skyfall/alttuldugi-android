@@ -47,17 +47,18 @@
             android:layout_marginTop="30dp"
             android:elevation="12dp"
             android:minWidth="0dp"
-            android:paddingStart="28dp"
-            android:paddingTop="14dp"
-            android:paddingEnd="28dp"
-            android:paddingBottom="14dp"
-            android:text="@string/landing_start"
-            android:textColor="@color/surface_background"
-            app:backgroundTint="@color/landing_button_bg"
-            app:cornerRadius="18dp"
-            app:rippleColor="@color/text_primary"
-            app:strokeColor="@color/landing_button_stroke"
-            app:strokeWidth="1dp" />
+        android:paddingStart="28dp"
+        android:paddingTop="14dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="14dp"
+        android:text="@string/landing_start"
+        android:textColor="@color/surface_background"
+        android:transitionName="@string/transition_home_cta"
+        app:backgroundTint="@color/landing_button_bg"
+        app:cornerRadius="18dp"
+        app:rippleColor="@color/text_primary"
+        app:strokeColor="@color/landing_button_stroke"
+        app:strokeWidth="1dp" />
     </LinearLayout>
 
     <View
