@@ -9,7 +9,7 @@ import com.mvnohopper.data.entity.MobileService
 
 @Database(
     entities = [MobileService::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class MvnoHopperDatabase : RoomDatabase() {
@@ -26,7 +26,10 @@ abstract class MvnoHopperDatabase : RoomDatabase() {
                     context.applicationContext,
                     MvnoHopperDatabase::class.java,
                     "mvno_hopper.db"
-                ).build().also { INSTANCE = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
+                    .also { INSTANCE = it }
             }
         }
     }
