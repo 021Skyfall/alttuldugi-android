@@ -3,6 +3,7 @@
     <color name="brand_primary">#0F766E</color>
     <color name="brand_primary_dark">#115E59</color>
     <color name="brand_accent">#F59E0B</color>
+    <color name="accent_warning">#C2410C</color>
     <color name="surface_background">#F8FAFC</color>
     <color name="text_primary">#0F172A</color>
 </resources>
