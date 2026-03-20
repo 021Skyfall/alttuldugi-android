@@ -29,4 +29,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             items.forEach { repository.delete(it) }
         }
     }
+
+    fun updateMobileService(item: MobileService) {
+        viewModelScope.launch {
+            repository.update(item)
+        }
+    }
 }

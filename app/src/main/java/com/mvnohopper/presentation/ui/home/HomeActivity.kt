@@ -17,7 +17,10 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHomeBinding
     private val viewModel: HomeViewModel by viewModels()
-    private val mobileServiceAdapter: MobileServiceAdapter = MobileServiceAdapter(::updateDeleteState)
+    private val mobileServiceAdapter: MobileServiceAdapter = MobileServiceAdapter(
+        onSelectionChanged = ::updateDeleteState,
+        onUpdateRequested = { viewModel.updateMobileService(it) }
+    )
     private val shouldAnimateEntry: Boolean by lazy {
         intent.getBooleanExtra(EXTRA_ANIMATE_ENTRY, false)
     }
