@@ -38,6 +38,7 @@
     <string name="add_edit_save_snackbar">입력 검증은 통과했습니다.</string>
     <string name="add_edit_save_success">회선 정보가 저장되었습니다.</string>
     <string name="add_edit_save_failed">저장 중 오류가 발생했습니다.</string>
+    <string name="common_back">뒤로가기</string>
     <string name="common_cancel">취소</string>
     <string name="common_save">저장</string>
     <string name="operator_option_kt">KT 알뜰폰</string>

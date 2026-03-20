@@ -30,6 +30,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - 홈 카드 가독성 개선 및 알림 예정일 일반 라인 처리
 - 앱 첫 진입 시 미니멀한 랜딩 화면 제공
 - 랜딩 버튼 플로팅 스타일 및 시작 애니메이션 추가
+- 등록 화면 입력 박스와 상단바를 다크 카드형 스타일로 개선
 - 아직 목록/수정/상세/알림 실제 기능은 구현 전
 
 ## 시작 방법

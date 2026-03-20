@@ -38,6 +38,7 @@ class AddEditActivity : AppCompatActivity() {
 
     private fun setupAppBar() {
         binding.toolbar.title = getString(R.string.add_edit_title)
+        binding.toolbar.navigationContentDescription = getString(R.string.common_back)
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }

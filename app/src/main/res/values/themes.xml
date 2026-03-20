@@ -12,4 +12,23 @@
         <item name="colorOnSurface">@color/text_primary</item>
         <item name="colorOutline">@color/divider_dark</item>
     </style>
+
+    <style name="ShapeAppearance.Alttuldugi.Input" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+
+    <style name="Widget.Alttuldugi.TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
+        <item name="boxBackgroundMode">filled</item>
+        <item name="boxBackgroundColor">@color/input_fill_bg</item>
+        <item name="boxCornerRadiusTopStart">18dp</item>
+        <item name="boxCornerRadiusTopEnd">18dp</item>
+        <item name="boxCornerRadiusBottomStart">18dp</item>
+        <item name="boxCornerRadiusBottomEnd">18dp</item>
+        <item name="boxStrokeColor">@color/input_stroke</item>
+        <item name="hintTextColor">@color/input_hint</item>
+        <item name="android:textColorHint">@color/input_hint</item>
+        <item name="errorTextColor">@color/accent_warning</item>
+        <item name="endIconTint">@color/text_secondary</item>
+    </style>
 </resources>
