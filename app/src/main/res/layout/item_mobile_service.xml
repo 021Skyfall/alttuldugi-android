@@ -57,11 +57,12 @@
                         android:textColor="@color/text_secondary" />
                 </LinearLayout>
 
-                <com.google.android.material.checkbox.MaterialCheckBox
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/selectCheckBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/brand_primary"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:background="@null"
+                    android:button="@drawable/selector_rounded_checkbox"
                     android:minWidth="0dp"
                     android:minHeight="0dp"
                     android:padding="0dp" />

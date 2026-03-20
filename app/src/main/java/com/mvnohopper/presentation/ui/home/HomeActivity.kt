@@ -110,7 +110,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun updateDeleteState(selectedCount: Int) {
-        binding.deleteButton.visibility = if (selectedCount > 0) View.VISIBLE else View.GONE
+        binding.deleteButton.visibility = if (selectedCount > 0) View.VISIBLE else View.INVISIBLE
         binding.deleteButton.isEnabled = selectedCount > 0
+        binding.deleteButton.alpha = if (selectedCount > 0) 1f else 0.35f
     }
 }

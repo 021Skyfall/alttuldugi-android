@@ -52,7 +52,7 @@
             android:enabled="false"
             android:text="@string/home_delete"
             android:textColor="@color/text_primary"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:backgroundTint="@color/chip_red_bg"
             app:cornerRadius="16dp"
             app:strokeColor="@color/chip_red_stroke"
