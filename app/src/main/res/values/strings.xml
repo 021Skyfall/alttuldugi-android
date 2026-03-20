@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">알뜰뚜기</string>
+    <string name="landing_title">알뜰뚜기</string>
+    <string name="landing_description">알뜰폰 요금제의 종료일과 갈아탈 시점을\n간단하고 깔끔하게 관리합니다.</string>
+    <string name="landing_start">시작하기</string>
     <string name="home_title">알뜰폰 메뚜기 관리</string>
     <string name="home_subtitle">회선 정보와 추천 해지일을 한 곳에서 관리합니다.</string>
     <string name="home_line_count">등록된 요금제 수: %1$d</string>
