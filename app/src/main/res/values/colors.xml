@@ -7,10 +7,10 @@
     <color name="surface_background">#0B1220</color>
     <color name="surface_card">#121A2A</color>
     <color name="surface_card_alt">#182235</color>
-    <color name="card_stroke">#31425D</color>
+    <color name="card_stroke">#415878</color>
     <color name="text_primary">#E5EEF8</color>
     <color name="text_secondary">#9FB0C7</color>
-    <color name="divider_dark">#22314A</color>
+    <color name="divider_dark">#2A3A55</color>
     <color name="chip_green_bg">#163D36</color>
     <color name="chip_green_stroke">#2C7A68</color>
     <color name="chip_red_bg">#3A1E24</color>
