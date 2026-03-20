@@ -50,6 +50,20 @@
             android:layout_marginTop="4dp"
             android:textAppearance="?attr/textAppearanceBodySmall" />
 
+        <TextView
+            android:id="@+id/recommendedDateTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
+        <TextView
+            android:id="@+id/statusSummaryTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="?attr/textAppearanceBodySmall" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
