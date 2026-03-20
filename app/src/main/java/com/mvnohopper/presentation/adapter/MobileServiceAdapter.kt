@@ -56,11 +56,13 @@ class MobileServiceAdapter :
                     item.recommendedReminderDate.toString()
                 )
             )
-            binding.statusSummaryTextView.text = binding.root.context.getString(
-                R.string.home_status_summary,
-                item.elapsedMonths,
-                item.remainingPromotionDays,
-                item.recommendedReminderDate.toString()
+            binding.statusSummaryTextView.text = buildStatusSummaryText(
+                binding.root.context.getString(
+                    R.string.home_status_summary,
+                    item.elapsedMonths,
+                    item.remainingPromotionDays,
+                    item.recommendedReminderDate.toString()
+                )
             )
         }
 
@@ -70,10 +72,17 @@ class MobileServiceAdapter :
             val start = fullText.indexOf(value)
             val end = start + value.length
             return SpannableString(fullText).apply {
+                val labelEnd = if (start > 0) start else fullText.length
                 setSpan(
                     ForegroundColorSpan(ContextCompat.getColor(context, R.color.accent_warning)),
                     0,
-                    fullText.length,
+                    labelEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    labelEnd,
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
                 if (start >= 0) {
@@ -90,6 +99,22 @@ class MobileServiceAdapter :
         private fun buildBoldDateText(fullText: String): SpannableString {
             val value = fullText.substringAfter(": ").ifBlank { fullText }
             val start = fullText.indexOf(value)
+            val end = start + value.length
+            return SpannableString(fullText).apply {
+                if (start >= 0) {
+                    setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        start,
+                        end,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+            }
+        }
+
+        private fun buildStatusSummaryText(fullText: String): SpannableString {
+            val value = fullText.substringAfterLast(" ").ifBlank { fullText }
+            val start = fullText.lastIndexOf(value)
             val end = start + value.length
             return SpannableString(fullText).apply {
                 if (start >= 0) {
