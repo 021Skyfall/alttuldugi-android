@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/surface_card_alt" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/brand_primary" />
+            <size
+                android:width="18dp"
+                android:height="18dp" />
+        </shape>
+    </item>
+    <item
+        android:gravity="center"
+        android:width="8dp"
+        android:height="8dp">
+        <shape android:shape="oval">
+            <solid android:color="@color/brand_primary" />
+        </shape>
+    </item>
+</layer-list>
