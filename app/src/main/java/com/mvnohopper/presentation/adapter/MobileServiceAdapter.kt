@@ -133,7 +133,28 @@ class MobileServiceAdapter(
             binding.root.setOnClickListener {
                 dismissInlineEditors()
             }
+            binding.contentContainer.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.headerSection.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.dateRowContainer.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.promotionCardContainer.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.recommendedCardContainer.setOnClickListener {
+                dismissInlineEditors()
+            }
             binding.progressSummaryTextView.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.promotionLabelTextView.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.recommendedLabelTextView.setOnClickListener {
                 dismissInlineEditors()
             }
             binding.operatorNameTextView.setOnClickListener {

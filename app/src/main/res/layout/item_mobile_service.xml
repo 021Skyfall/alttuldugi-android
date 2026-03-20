@@ -11,12 +11,14 @@
     app:strokeWidth="2dp">
 
     <LinearLayout
+        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="18dp">
 
         <LinearLayout
+            android:id="@+id/headerSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_plan_card_section"
@@ -144,12 +146,14 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/dateRowContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/promotionCardContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -182,6 +186,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/recommendedCardContainer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
