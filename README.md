@@ -3,7 +3,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 
 # 알뜰뚜기 (Alttuldugi)
 
-알뜰폰(MVNO) 메뚜기 요금제를 관리하고, 프로모션 종료/최소 유지 기간을 고려해  
+알뜰폰(MVNO) 메뚜기 요금제를 관리하고, 프로모션 종료/최소 유지 기간을 고려해
 손해 없이 해지·번호이동할 수 있는 시점을 계산해주는 안드로이드 앱입니다.
 
 - 가입/개통일 + 프로모션 개월 수 기반으로 **프로모션 종료일** 계산
@@ -12,3 +12,25 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - 여러 회선을 한 번에 관리
 
 자세한 기획/사양은 [`docs/mvno-hopper-spec.md`](docs/mvno-hopper-spec.md)를 참고하세요.
+
+## 현재 상태
+
+- Android Studio에서 열 수 있는 초기 프로젝트 골격 생성
+- `Room`, `Lifecycle`, `WorkManager`, `Material3` 의존성 반영
+- `DateCalculator`, `MobileService`, `Repository`, `HomeActivity` 기본 뼈대 추가
+- 아직 등록/수정/상세/알림 실제 기능은 구현 전
+
+## 시작 방법
+
+1. Android Studio 최신 버전을 설치합니다.
+2. `Open`으로 이 폴더를 그대로 엽니다.
+3. Android SDK와 JDK 17 설정이 필요하면 Android Studio 안내에 따라 맞춥니다.
+4. Gradle Sync를 실행합니다.
+5. 에뮬레이터 또는 실기기를 연결한 뒤 앱을 실행합니다.
+
+## 다음 추천 작업
+
+1. `DateCalculator` 단위 테스트 추가
+2. 회선 등록 화면(`add_edit`) 구현
+3. 메인 목록 화면에 RecyclerView 연결
+4. 상세보기 화면과 알림 예약 연결
