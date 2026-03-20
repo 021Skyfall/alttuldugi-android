@@ -45,10 +45,10 @@ class LandingActivity : AppCompatActivity() {
 
         binding.startButton.animate()
             .translationY(moveDistance)
+            .alpha(0f)
             .setInterpolator(FastOutSlowInInterpolator())
-            .setDuration(620L)
+            .setDuration(560L)
             .withEndAction {
-                binding.startButton.text = getString(R.string.home_add_line)
                 val intent = Intent(this, HomeActivity::class.java).apply {
                     putExtra(HomeActivity.EXTRA_ANIMATE_ENTRY, true)
                 }
@@ -57,9 +57,5 @@ class LandingActivity : AppCompatActivity() {
                 finish()
             }
             .start()
-
-        binding.startButton.postDelayed({
-            binding.startButton.text = getString(R.string.home_add_line)
-        }, 260L)
     }
 }
