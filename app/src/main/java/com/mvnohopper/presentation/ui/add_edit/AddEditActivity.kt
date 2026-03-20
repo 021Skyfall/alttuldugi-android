@@ -3,6 +3,7 @@ package com.mvnohopper.presentation.ui.add_edit
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import com.google.android.material.textfield.TextInputLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityAddEditBinding
@@ -38,7 +39,7 @@ class AddEditActivity : AppCompatActivity() {
             false
         )
         binding.activationDateEditText.setText(LocalDate.now().format(dateFormatter))
-        binding.promotionMonthsEditText.setText("4")
+        binding.promotionMonthsEditText.setText("0")
         binding.minContractMonthsEditText.setText("0")
         binding.earlyTerminationFeeEditText.setText("0")
         binding.monthlyFeeEditText.setText("0")
@@ -61,7 +62,7 @@ class AddEditActivity : AppCompatActivity() {
             finish()
         }
         binding.saveButton.setOnClickListener {
-            binding.formGuideTextView.text = getString(R.string.add_edit_save_placeholder)
+            handleSave()
         }
     }
 
@@ -73,10 +74,62 @@ class AddEditActivity : AppCompatActivity() {
         )
         val adapter = ArrayAdapter(
             this,
-            android.R.layout.simple_list_item_1,
+            R.layout.item_dropdown_operator,
             operatorOptions
         )
         binding.operatorNameEditText.setAdapter(adapter)
+    }
+
+    private fun handleSave() {
+        clearValidationErrors()
+
+        val invalidLayout = validateRequiredFields()
+        if (invalidLayout != null) {
+            invalidLayout.requestFocus()
+            binding.formGuideTextView.text = getString(R.string.add_edit_validation_guide)
+            return
+        }
+
+        binding.formGuideTextView.text = getString(R.string.add_edit_save_placeholder)
+    }
+
+    private fun clearValidationErrors() {
+        binding.operatorNameLayout.error = null
+        binding.providerNameLayout.error = null
+        binding.planNameLayout.error = null
+        binding.activationDateLayout.error = null
+        binding.promotionMonthsLayout.error = null
+        binding.minContractMonthsLayout.error = null
+        binding.earlyTerminationFeeLayout.error = null
+        binding.monthlyFeeLayout.error = null
+        binding.reminderDaysLayout.error = null
+    }
+
+    private fun validateRequiredFields(): TextInputLayout? {
+        val validationTargets = listOf(
+            binding.operatorNameLayout to binding.operatorNameEditText.text?.toString(),
+            binding.providerNameLayout to binding.providerNameEditText.text?.toString(),
+            binding.planNameLayout to binding.planNameEditText.text?.toString(),
+            binding.activationDateLayout to binding.activationDateEditText.text?.toString(),
+            binding.promotionMonthsLayout to binding.promotionMonthsEditText.text?.toString(),
+            binding.minContractMonthsLayout to binding.minContractMonthsEditText.text?.toString(),
+            binding.earlyTerminationFeeLayout to binding.earlyTerminationFeeEditText.text?.toString(),
+            binding.monthlyFeeLayout to binding.monthlyFeeEditText.text?.toString(),
+            binding.reminderDaysLayout to binding.reminderDaysEditText.text?.toString()
+        )
+
+        var firstInvalidLayout: TextInputLayout? = null
+
+        for ((layout, value) in validationTargets) {
+            if (value.isNullOrBlank()) {
+                layout.error = getString(R.string.add_edit_required_error)
+                if (firstInvalidLayout == null) {
+                    firstInvalidLayout = layout
+                }
+            }
+        }
+
+        return firstInvalidLayout
     }
 
     private fun showDatePicker() {

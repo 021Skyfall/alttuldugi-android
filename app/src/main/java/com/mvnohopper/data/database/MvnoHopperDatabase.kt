@@ -9,7 +9,7 @@ import com.mvnohopper.data.entity.MobileService
 
 @Database(
     entities = [MobileService::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class MvnoHopperDatabase : RoomDatabase() {

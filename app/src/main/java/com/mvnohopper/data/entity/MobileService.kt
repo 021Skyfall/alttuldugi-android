@@ -8,7 +8,8 @@ data class MobileService(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
     val operatorName: String,
-    val planName: String = "",
+    val providerName: String,
+    val planName: String,
     val activationDate: String,
     val promotionMonths: Int,
     val minContractMonths: Int = 0,
