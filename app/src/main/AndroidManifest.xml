@@ -8,6 +8,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Alttuldugi">
         <activity
+            android:name=".presentation.ui.add_edit.AddEditActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.ui.home.HomeActivity"
             android:exported="true">
             <intent-filter>
