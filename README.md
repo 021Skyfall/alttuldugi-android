@@ -36,6 +36,6 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 ## 다음 추천 작업
 
 1. `DateCalculator` 단위 테스트 추가
-2. 회선 등록 화면(`add_edit`) 구현
+2. 요금제 등록 화면(`add_edit`) 구현
 3. 메인 목록 화면에 RecyclerView 연결
 4. 상세보기 화면과 알림 예약 연결
