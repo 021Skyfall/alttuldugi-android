@@ -2,6 +2,7 @@ package com.mvnohopper.presentation.ui.add_edit
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityAddEditBinding
@@ -19,6 +20,7 @@ class AddEditActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupAppBar()
+        setupOperatorDropdown()
         setupDefaultValues()
         setupListeners()
     }
@@ -31,6 +33,10 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun setupDefaultValues() {
+        binding.operatorNameEditText.setText(
+            getString(R.string.operator_option_kt),
+            false
+        )
         binding.activationDateEditText.setText(LocalDate.now().format(dateFormatter))
         binding.promotionMonthsEditText.setText("4")
         binding.minContractMonthsEditText.setText("0")
@@ -49,6 +55,20 @@ class AddEditActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
             binding.formGuideTextView.text = getString(R.string.add_edit_save_placeholder)
         }
+    }
+
+    private fun setupOperatorDropdown() {
+        val operatorOptions = listOf(
+            getString(R.string.operator_option_kt),
+            getString(R.string.operator_option_sk),
+            getString(R.string.operator_option_lg)
+        )
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_list_item_1,
+            operatorOptions
+        )
+        binding.operatorNameEditText.setAdapter(adapter)
     }
 
     private fun showDatePicker() {

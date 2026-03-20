@@ -33,29 +33,18 @@
                 android:textAppearance="?attr/textAppearanceBodyMedium" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/operatorNameLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                app:endIconMode="dropdown_menu">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/lineNameEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/add_edit_line_name"
-                    android:inputType="textCapSentences" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/operatorNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/add_edit_operator_name"
-                    android:inputType="textCapWords" />
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

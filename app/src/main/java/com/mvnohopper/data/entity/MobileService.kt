@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class MobileService(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
-    val lineName: String,
     val operatorName: String,
     val planName: String = "",
     val activationDate: String,

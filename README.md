@@ -10,6 +10,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - 최소 유지 개월 수를 고려해 **추천 해지일** 계산
 - 추천 해지일 기준 **N일 전(기본 15일)** 에 알림 발송
 - 여러 회선을 한 번에 관리
+- 통신사는 `KT 알뜰폰 / SK 알뜰폰 / LG 알뜰폰` 드롭다운으로 선택
 
 자세한 기획/사양은 [`docs/mvno-hopper-spec.md`](docs/mvno-hopper-spec.md)를 참고하세요.
 
@@ -18,6 +19,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - Android Studio에서 열 수 있는 초기 프로젝트 골격 생성
 - `Room`, `Lifecycle`, `WorkManager`, `Material3` 의존성 반영
 - `DateCalculator`, `MobileService`, `Repository`, `HomeActivity` 기본 뼈대 추가
+- 등록 화면에서 회선명 제거, 통신사 드롭다운 반영
 - 아직 등록/수정/상세/알림 실제 기능은 구현 전
 
 ## 시작 방법
