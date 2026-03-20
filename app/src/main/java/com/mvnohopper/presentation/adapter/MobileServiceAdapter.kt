@@ -1,13 +1,7 @@
 package com.mvnohopper.presentation.adapter
 
-import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -44,18 +38,8 @@ class MobileServiceAdapter :
                 R.string.home_activation_date,
                 mobileService.activationDate
             )
-            binding.promotionSummaryTextView.text = buildPromotionEndText(
-                binding.root.context.getString(
-                    R.string.home_promotion_end_date,
-                    item.promotionEndDate.toString()
-                )
-            )
-            binding.recommendedDateTextView.text = buildBoldDateText(
-                binding.root.context.getString(
-                    R.string.home_recommended_termination_date,
-                    item.recommendedReminderDate.toString()
-                )
-            )
+            binding.promotionDateTextView.text = item.promotionEndDate.toString()
+            binding.recommendedDateTextView.text = item.recommendedReminderDate.toString()
             binding.progressSummaryTextView.text = binding.root.context.getString(
                 R.string.home_progress_summary,
                 item.elapsedMonths,
@@ -69,47 +53,17 @@ class MobileServiceAdapter :
             )
         }
 
-        private fun buildPromotionEndText(fullText: String): SpannableString {
-            val context = binding.root.context
+        private fun buildBoldDateText(fullText: String): android.text.SpannableString {
             val value = fullText.substringAfter(": ").ifBlank { fullText }
             val start = fullText.indexOf(value)
             val end = start + value.length
-            return SpannableString(fullText).apply {
-                val labelEnd = if (start > 0) start else fullText.length
-                setSpan(
-                    ForegroundColorSpan(ContextCompat.getColor(context, R.color.accent_warning)),
-                    0,
-                    labelEnd,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-                setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    0,
-                    labelEnd,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
+            return android.text.SpannableString(fullText).apply {
                 if (start >= 0) {
                     setSpan(
-                        StyleSpan(Typeface.BOLD),
+                        android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                         start,
                         end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-        }
-
-        private fun buildBoldDateText(fullText: String): SpannableString {
-            val value = fullText.substringAfter(": ").ifBlank { fullText }
-            val start = fullText.indexOf(value)
-            val end = start + value.length
-            return SpannableString(fullText).apply {
-                if (start >= 0) {
-                    setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        start,
-                        end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
             }

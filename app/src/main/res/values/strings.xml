@@ -11,6 +11,8 @@
     <string name="home_activation_date">가입일: %1$s</string>
     <string name="home_promotion_end_date">프로모션 종료일: %1$s</string>
     <string name="home_recommended_termination_date">추천 해지일(-15일): %1$s</string>
+    <string name="home_promotion_end_label">프로모션 종료일</string>
+    <string name="home_recommended_termination_label">추천 해지일 (-15일)</string>
     <string name="home_progress_summary">경과 %1$d개월 · 남은 기간 %2$d일</string>
     <string name="home_alert_date">알림 예정: %1$s</string>
     <string name="add_edit_title">요금제 등록</string>
