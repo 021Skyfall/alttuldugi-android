@@ -95,7 +95,7 @@
                         android:visibility="gone" />
                 </LinearLayout>
 
-                <androidx.appcompat.widget.AppCompatRadioButton
+                <androidx.appcompat.widget.AppCompatCheckBox
                     android:id="@+id/selectCheckBox"
                     android:layout_width="18dp"
                     android:layout_height="18dp"
