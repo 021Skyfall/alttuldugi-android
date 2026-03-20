@@ -2,9 +2,12 @@ package com.mvnohopper.presentation.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.graphics.Rect
+import android.view.MotionEvent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mvnohopper.R
 import com.mvnohopper.data.entity.MobileService
@@ -35,6 +38,20 @@ class HomeActivity : AppCompatActivity() {
         setupRecyclerView()
         setupListeners()
         observeMobileServices()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val focusedView = currentFocus
+            if (focusedView is EditText) {
+                val outRect = Rect()
+                focusedView.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    focusedView.clearFocus()
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun setupRecyclerView() {
