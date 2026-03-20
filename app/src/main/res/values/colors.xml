@@ -11,6 +11,8 @@
     <color name="text_primary">#E5EEF8</color>
     <color name="text_secondary">#9FB0C7</color>
     <color name="divider_dark">#2A3A55</color>
+    <color name="operator_badge_bg">#1D2E4A</color>
+    <color name="operator_badge_stroke">#5574A5</color>
     <color name="chip_green_bg">#163D36</color>
     <color name="chip_green_stroke">#2C7A68</color>
     <color name="chip_red_bg">#3A1E24</color>

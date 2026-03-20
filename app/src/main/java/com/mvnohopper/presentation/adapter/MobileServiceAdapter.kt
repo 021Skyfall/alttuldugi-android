@@ -40,10 +40,12 @@ class MobileServiceAdapter :
             )
             binding.promotionDateTextView.text = item.promotionEndDate.toString()
             binding.recommendedDateTextView.text = item.recommendedReminderDate.toString()
-            binding.progressSummaryTextView.text = binding.root.context.getString(
-                R.string.home_progress_summary,
-                item.elapsedMonths,
-                item.remainingPromotionDays
+            binding.progressSummaryTextView.text = buildRemainingDaysText(
+                binding.root.context.getString(
+                    R.string.home_progress_summary,
+                    item.elapsedMonths,
+                    item.remainingPromotionDays
+                )
             )
             binding.alertDateTextView.text = buildBoldDateText(
                 binding.root.context.getString(
@@ -66,6 +68,24 @@ class MobileServiceAdapter :
                         android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                     )
                 }
+            }
+        }
+
+        private fun buildRemainingDaysText(fullText: String): android.text.SpannableString {
+            val marker = "남은 기간 "
+            val start = fullText.indexOf(marker)
+            if (start < 0) {
+                return android.text.SpannableString(fullText)
+            }
+            val valueStart = start + marker.length
+            val valueEnd = fullText.indexOf("일", valueStart).let { if (it >= 0) it + 1 else fullText.length }
+            return android.text.SpannableString(fullText).apply {
+                setSpan(
+                    android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                    valueStart,
+                    valueEnd,
+                    android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
             }
         }
 
