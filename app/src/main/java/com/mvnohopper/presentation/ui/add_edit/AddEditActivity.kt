@@ -2,20 +2,26 @@ package com.mvnohopper.presentation.ui.add_edit
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.ArrayAdapter
-import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.snackbar.Snackbar
+import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.mvnohopper.R
+import com.mvnohopper.data.entity.MobileService
 import com.mvnohopper.databinding.ActivityAddEditBinding
+import com.mvnohopper.presentation.viewmodel.AddEditViewModel
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class AddEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddEditBinding
+    private val viewModel: AddEditViewModel by viewModels()
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +33,7 @@ class AddEditActivity : AppCompatActivity() {
         setupDefaultValues()
         setupNumericFieldBehavior()
         setupListeners()
+        observeViewModel()
     }
 
     private fun setupAppBar() {
@@ -122,12 +129,9 @@ class AddEditActivity : AppCompatActivity() {
             return
         }
 
-        binding.formGuideTextView.text = getString(R.string.add_edit_save_placeholder)
-        Snackbar.make(
-            binding.root,
-            getString(R.string.add_edit_save_snackbar),
-            Snackbar.LENGTH_SHORT
-        ).show()
+        binding.formGuideTextView.text = getString(R.string.add_edit_saving_placeholder)
+        binding.saveButton.isEnabled = false
+        viewModel.saveMobileService(buildMobileService())
     }
 
     private fun clearValidationErrors() {
@@ -167,6 +171,53 @@ class AddEditActivity : AppCompatActivity() {
         }
 
         return firstInvalidLayout
+    }
+
+    private fun observeViewModel() {
+        viewModel.saveResult.observe(this) { saveSucceeded ->
+            when (saveSucceeded) {
+                true -> {
+                    binding.saveButton.isEnabled = true
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.add_edit_save_success),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+
+                false -> {
+                    binding.saveButton.isEnabled = true
+                    binding.formGuideTextView.text = getString(R.string.add_edit_save_failed)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.add_edit_save_failed),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+
+                null -> Unit
+            }
+        }
+    }
+
+    private fun buildMobileService(): MobileService {
+        val now = LocalDateTime.now().format(dateTimeFormatter)
+
+        return MobileService(
+            operatorName = binding.operatorNameEditText.text.toString().trim(),
+            providerName = binding.providerNameEditText.text.toString().trim(),
+            planName = binding.planNameEditText.text.toString().trim(),
+            activationDate = binding.activationDateEditText.text.toString().trim(),
+            promotionMonths = binding.promotionMonthsEditText.text.toString().trim().toInt(),
+            minContractMonths = binding.minContractMonthsEditText.text.toString().trim().toInt(),
+            earlyTerminationFee = binding.earlyTerminationFeeEditText.text.toString().trim().toInt(),
+            monthlyFee = binding.monthlyFeeEditText.text.toString().trim().toInt(),
+            reminderDaysBeforeEnd = binding.reminderDaysEditText.text.toString().trim().toInt(),
+            notes = binding.notesEditText.text?.toString()?.trim().orEmpty(),
+            createdAt = now,
+            updatedAt = now
+        )
     }
 
     private fun showDatePicker() {
