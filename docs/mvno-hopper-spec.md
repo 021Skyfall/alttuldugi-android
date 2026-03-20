@@ -432,6 +432,11 @@ Case 3) 프로모션 4개월, 최소유지 12개월
 | UI | Material3 (androidx.material3) | Modern Material Design |
 | Lifecycle | androidx.lifecycle | ViewModel, LiveData |
 
+### 5.2.1 UI 테마 방향
+- 기본 테마는 **다크 모드 고정**
+- 홈 목록에서 `프로모션 종료일`, `추천 해지일(-15일)`, `알림 예정일`은 둥근 배경으로 강조
+- `프로모션 종료일` 라벨은 붉은색 강조, 날짜 값은 볼드 처리
+
 ### 5.3 아키텍처 패턴
 - **MVVM** (Model-View-ViewModel)
   - **Model**: Room Entity + Repository

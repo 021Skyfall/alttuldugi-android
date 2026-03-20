@@ -26,6 +26,7 @@ Android app to manage Korean MVNO promo plans and remind optimal cancellation da
 - 홈 화면 하단에 등록된 요금제 조회 목록 추가
 - 홈 화면 목록에 계산된 종료일/추천 해지일/알림 예정일 반영
 - 홈 화면에서 프로모션 종료일 강조 표시 및 추천 해지일(-15일) 기본 노출
+- 앱 전체 다크 모드 고정 및 핵심 날짜 강조 배경 적용
 - 아직 목록/수정/상세/알림 실제 기능은 구현 전
 
 ## 시작 방법
