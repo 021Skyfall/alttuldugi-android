@@ -29,13 +29,35 @@
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="@color/text_secondary" />
 
-    <TextView
-        android:id="@+id/listTitleTextView"
+    <LinearLayout
+        android:id="@+id/listHeaderRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/home_list_title"
-        android:textAppearance="?attr/textAppearanceTitleMedium" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/listTitleTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/home_list_title"
+            android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/home_delete"
+            android:textColor="@color/text_primary"
+            android:visibility="gone"
+            app:backgroundTint="@color/chip_red_bg"
+            app:cornerRadius="16dp"
+            app:strokeColor="@color/chip_red_stroke"
+            app:strokeWidth="1dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/emptyStateTextView"

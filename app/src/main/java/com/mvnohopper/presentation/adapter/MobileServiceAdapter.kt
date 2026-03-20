@@ -10,8 +10,11 @@ import com.mvnohopper.R
 import com.mvnohopper.databinding.ItemMobileServiceBinding
 import com.mvnohopper.domain.model.MobileServiceWithCalculations
 
-class MobileServiceAdapter :
-    ListAdapter<MobileServiceWithCalculations, MobileServiceAdapter.MobileServiceViewHolder>(DiffCallback) {
+class MobileServiceAdapter(
+    private val onSelectionChanged: (Int) -> Unit = {}
+) : ListAdapter<MobileServiceWithCalculations, MobileServiceAdapter.MobileServiceViewHolder>(DiffCallback) {
+
+    private val selectedIds = linkedSetOf<Long>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MobileServiceViewHolder {
         val binding = ItemMobileServiceBinding.inflate(
@@ -23,14 +26,33 @@ class MobileServiceAdapter :
     }
 
     override fun onBindViewHolder(holder: MobileServiceViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = getItem(position)
+        holder.bind(item, selectedIds.contains(item.mobileService.id))
     }
 
-    class MobileServiceViewHolder(
+    override fun submitList(list: List<MobileServiceWithCalculations>?) {
+        super.submitList(list) {
+            val validIds = list.orEmpty().map { it.mobileService.id }.toSet()
+            if (selectedIds.retainAll(validIds)) {
+                onSelectionChanged(selectedIds.size)
+            }
+        }
+    }
+
+    fun getSelectedIds(): Set<Long> = selectedIds.toSet()
+
+    fun clearSelection() {
+        if (selectedIds.isEmpty()) return
+        selectedIds.clear()
+        notifyDataSetChanged()
+        onSelectionChanged(0)
+    }
+
+    inner class MobileServiceViewHolder(
         private val binding: ItemMobileServiceBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: MobileServiceWithCalculations) {
+        fun bind(item: MobileServiceWithCalculations, isSelected: Boolean) {
             val mobileService = item.mobileService
             binding.operatorNameTextView.text = mobileService.operatorName
             binding.providerNameTextView.text = mobileService.providerName
@@ -54,6 +76,17 @@ class MobileServiceAdapter :
                     item.recommendedReminderDate.toString()
                 )
             )
+
+            binding.selectCheckBox.setOnCheckedChangeListener(null)
+            binding.selectCheckBox.isChecked = isSelected
+            binding.selectCheckBox.setOnCheckedChangeListener { _, checked ->
+                if (checked) {
+                    selectedIds.add(mobileService.id)
+                } else {
+                    selectedIds.remove(mobileService.id)
+                }
+                onSelectionChanged(selectedIds.size)
+            }
         }
 
         private fun buildBoldDateText(fullText: String): android.text.SpannableString {
@@ -97,7 +130,6 @@ class MobileServiceAdapter :
                 )
             }
         }
-
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<MobileServiceWithCalculations>() {
