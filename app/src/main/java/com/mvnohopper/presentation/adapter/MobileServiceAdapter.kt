@@ -56,11 +56,14 @@ class MobileServiceAdapter :
                     item.recommendedReminderDate.toString()
                 )
             )
-            binding.statusSummaryTextView.text = buildStatusSummaryText(
+            binding.progressSummaryTextView.text = binding.root.context.getString(
+                R.string.home_progress_summary,
+                item.elapsedMonths,
+                item.remainingPromotionDays
+            )
+            binding.alertDateTextView.text = buildBoldDateText(
                 binding.root.context.getString(
-                    R.string.home_status_summary,
-                    item.elapsedMonths,
-                    item.remainingPromotionDays,
+                    R.string.home_alert_date,
                     item.recommendedReminderDate.toString()
                 )
             )
@@ -112,21 +115,6 @@ class MobileServiceAdapter :
             }
         }
 
-        private fun buildStatusSummaryText(fullText: String): SpannableString {
-            val value = fullText.substringAfterLast(" ").ifBlank { fullText }
-            val start = fullText.lastIndexOf(value)
-            val end = start + value.length
-            return SpannableString(fullText).apply {
-                if (start >= 0) {
-                    setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        start,
-                        end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<MobileServiceWithCalculations>() {
