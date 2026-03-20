@@ -2,6 +2,7 @@ package com.mvnohopper.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -63,6 +64,14 @@ class MobileServiceAdapter :
                 if (start >= 0) {
                     setSpan(
                         android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        start,
+                        end,
+                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                    setSpan(
+                        android.text.style.ForegroundColorSpan(
+                            ContextCompat.getColor(binding.root.context, R.color.text_primary)
+                        ),
                         start,
                         end,
                         android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
