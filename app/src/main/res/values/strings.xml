@@ -20,6 +20,7 @@
     <string name="home_recommended_termination_label">추천 해지일 (-15일)</string>
     <string name="home_progress_summary">경과 %1$d개월 · 남은 기간 %2$d일</string>
     <string name="home_alert_date">알림 예정: %1$s</string>
+    <string name="home_alert_date_invalid">알림 예정일은 추천 해지일보다 늦을 수 없습니다.</string>
     <string name="add_edit_title">요금제 등록</string>
     <string name="add_edit_guide">필수 항목은 비워둘 수 없습니다. 저장 시 비어 있는 입력칸은 위에서부터 빨간색으로 표시됩니다.</string>
     <string name="add_edit_operator_name">통신사</string>

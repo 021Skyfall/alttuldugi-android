@@ -27,6 +27,7 @@ import com.mvnohopper.domain.model.MobileServiceWithCalculations
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class MobileServiceAdapter(
     private val onSelectionChanged: (Int) -> Unit = {},
@@ -129,10 +130,18 @@ class MobileServiceAdapter(
         private fun bindInlineEditTriggers(item: MobileServiceWithCalculations) {
             val mobileService = item.mobileService
 
+            binding.root.setOnClickListener {
+                dismissInlineEditors()
+            }
+            binding.progressSummaryTextView.setOnClickListener {
+                dismissInlineEditors()
+            }
             binding.operatorNameTextView.setOnClickListener {
+                dismissInlineEditors()
                 showOperatorEditor(mobileService)
             }
             binding.providerNameTextView.setOnClickListener {
+                dismissInlineEditors()
                 showTextEditor(
                     textView = binding.providerNameTextView,
                     editText = binding.providerNameEditor,
@@ -147,6 +156,7 @@ class MobileServiceAdapter(
                 }
             }
             binding.planNameTextView.setOnClickListener {
+                dismissInlineEditors()
                 showTextEditor(
                     textView = binding.planNameTextView,
                     editText = binding.planNameEditor,
@@ -160,8 +170,20 @@ class MobileServiceAdapter(
                     )
                 }
             }
+            binding.activationDateTextView.setOnClickListener {
+                dismissInlineEditors()
+                showActivationDatePicker(mobileService)
+            }
             binding.promotionDateTextView.setOnClickListener {
+                dismissInlineEditors()
                 showPromotionDatePicker(item)
+            }
+            binding.alertDateTextView.setOnClickListener {
+                dismissInlineEditors()
+                showAlertDatePicker(item)
+            }
+            binding.recommendedDateTextView.setOnClickListener {
+                dismissInlineEditors()
             }
         }
 
@@ -287,6 +309,80 @@ class MobileServiceAdapter(
                 currentDate.monthValue - 1,
                 currentDate.dayOfMonth
             ).show()
+        }
+
+        private fun showActivationDatePicker(mobileService: MobileService) {
+            val currentDate = runCatching {
+                LocalDate.parse(mobileService.activationDate, dateFormatter)
+            }.getOrElse {
+                LocalDate.now()
+            }
+
+            DatePickerDialog(
+                binding.root.context,
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    onUpdateRequested(
+                        mobileService.copy(
+                            activationDate = selectedDate.format(dateFormatter),
+                            updatedAt = now()
+                        )
+                    )
+                },
+                currentDate.year,
+                currentDate.monthValue - 1,
+                currentDate.dayOfMonth
+            ).show()
+        }
+
+        private fun showAlertDatePicker(item: MobileServiceWithCalculations) {
+            val mobileService = item.mobileService
+            val currentDate = item.recommendedReminderDate
+
+            DatePickerDialog(
+                binding.root.context,
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    val reminderDays = ChronoUnit.DAYS.between(
+                        selectedDate,
+                        item.recommendedTerminationDate
+                    ).toInt()
+
+                    if (reminderDays < 0) {
+                        Toast.makeText(
+                            binding.root.context,
+                            binding.root.context.getString(R.string.home_alert_date_invalid),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@DatePickerDialog
+                    }
+
+                    onUpdateRequested(
+                        mobileService.copy(
+                            reminderDaysBeforeEnd = reminderDays,
+                            updatedAt = now()
+                        )
+                    )
+                },
+                currentDate.year,
+                currentDate.monthValue - 1,
+                currentDate.dayOfMonth
+            ).show()
+        }
+
+        private fun dismissInlineEditors() {
+            if (binding.providerNameEditor.visibility == View.VISIBLE) {
+                binding.providerNameEditor.clearFocus()
+            }
+            if (binding.planNameEditor.visibility == View.VISIBLE) {
+                binding.planNameEditor.clearFocus()
+            }
+            if (binding.operatorNameEditor.visibility == View.VISIBLE) {
+                hideKeyboard(binding.operatorNameEditor)
+                binding.operatorNameEditor.clearFocus()
+                binding.operatorNameEditor.visibility = View.GONE
+                binding.operatorNameTextView.visibility = View.VISIBLE
+            }
         }
 
         private fun resetInlineEditors() {
