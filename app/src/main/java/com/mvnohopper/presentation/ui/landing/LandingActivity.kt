@@ -29,9 +29,7 @@ class LandingActivity : AppCompatActivity() {
         isTransitionRunning = true
         binding.startButton.isEnabled = false
 
-        val targetTop = resources.getDimensionPixelSize(R.dimen.landing_button_target_top)
-        val currentTop = binding.startButton.top
-        val moveDistance = (targetTop - currentTop).toFloat()
+        val moveDistance = -resources.getDimension(R.dimen.landing_button_travel_distance)
 
         binding.titleTextView.animate()
             .alpha(0.15f)
