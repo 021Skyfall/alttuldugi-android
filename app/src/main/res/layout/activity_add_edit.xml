@@ -44,7 +44,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/add_edit_operator_name"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -71,6 +73,7 @@
                     android:id="@+id/activationDateEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clickable="true"
                     android:focusable="false"
                     android:hint="@string/add_edit_activation_date"
                     android:inputType="date" />
@@ -137,7 +140,7 @@
                     android:id="@+id/reminderDaysEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/add_edit_reminder_days"
+                    android:hint="@string/add_edit_reminder_offset_days"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
 

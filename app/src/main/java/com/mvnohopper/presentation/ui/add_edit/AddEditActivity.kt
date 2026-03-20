@@ -49,6 +49,14 @@ class AddEditActivity : AppCompatActivity() {
         binding.activationDateLayout.setEndIconOnClickListener {
             showDatePicker()
         }
+        binding.activationDateEditText.setOnClickListener {
+            showDatePicker()
+        }
+        binding.activationDateEditText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                showDatePicker()
+            }
+        }
         binding.cancelButton.setOnClickListener {
             finish()
         }

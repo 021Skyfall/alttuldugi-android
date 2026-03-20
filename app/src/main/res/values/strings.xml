@@ -16,7 +16,7 @@
     <string name="add_edit_min_contract_months">최소 유지 기간(개월)</string>
     <string name="add_edit_early_termination_fee">위약금(원)</string>
     <string name="add_edit_monthly_fee">월 요금(원)</string>
-    <string name="add_edit_reminder_days">알림 리드타임(일)</string>
+    <string name="add_edit_reminder_offset_days">미리 알림 일수</string>
     <string name="add_edit_notes">메모</string>
     <string name="add_edit_save_placeholder">다음 단계에서 입력 검증과 Room 저장을 연결할 예정입니다.</string>
     <string name="common_cancel">취소</string>
