@@ -3,7 +3,7 @@ package com.mvnohopper.presentation.ui.landing
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityOptionsCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityLandingBinding
 import com.mvnohopper.presentation.ui.home.HomeActivity
@@ -28,28 +28,40 @@ class LandingActivity : AppCompatActivity() {
     private fun runLaunchAnimation() {
         isTransitionRunning = true
         binding.startButton.isEnabled = false
-        binding.contentContainer.animate()
-            .alpha(0.18f)
-            .translationY(-12f)
-            .setDuration(220L)
+
+        val targetTop = resources.getDimensionPixelSize(R.dimen.landing_button_target_top)
+        val currentTop = binding.startButton.top
+        val moveDistance = (targetTop - currentTop).toFloat()
+
+        binding.titleTextView.animate()
+            .alpha(0.15f)
+            .translationY(-18f)
+            .setDuration(240L)
+            .start()
+
+        binding.descriptionTextView.animate()
+            .alpha(0.15f)
+            .translationY(-14f)
+            .setDuration(240L)
             .start()
 
         binding.startButton.animate()
-            .translationYBy(-10f)
-            .setDuration(180L)
+            .translationY(moveDistance)
+            .setInterpolator(FastOutSlowInInterpolator())
+            .setDuration(620L)
             .withEndAction {
                 binding.startButton.text = getString(R.string.home_add_line)
                 val intent = Intent(this, HomeActivity::class.java).apply {
                     putExtra(HomeActivity.EXTRA_ANIMATE_ENTRY, true)
                 }
-                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    this,
-                    binding.startButton,
-                    getString(R.string.transition_home_cta)
-                )
-                startActivity(intent, options.toBundle())
+                startActivity(intent)
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
                 finish()
             }
             .start()
+
+        binding.startButton.postDelayed({
+            binding.startButton.text = getString(R.string.home_add_line)
+        }, 260L)
     }
 }

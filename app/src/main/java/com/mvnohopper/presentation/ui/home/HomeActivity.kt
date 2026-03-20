@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mvnohopper.R
 import com.mvnohopper.databinding.ActivityHomeBinding
@@ -23,9 +22,6 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (shouldAnimateEntry) {
-            postponeEnterTransition()
-        }
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -86,19 +82,16 @@ class HomeActivity : AppCompatActivity() {
             view.translationY = 18f
         }
 
-        binding.addLineButton.doOnPreDraw {
-            startPostponedEnterTransition()
-            binding.addLineButton.postDelayed({
-                fadeTargets.forEachIndexed { index, view ->
-                    view.animate()
-                        .alpha(1f)
-                        .translationY(0f)
-                        .setStartDelay(index * 35L)
-                        .setDuration(260L)
-                        .start()
-                }
-            }, 140L)
-        }
+        binding.addLineButton.postDelayed({
+            fadeTargets.forEachIndexed { index, view ->
+                view.animate()
+                    .alpha(1f)
+                    .translationY(0f)
+                    .setStartDelay(index * 35L)
+                    .setDuration(260L)
+                    .start()
+            }
+        }, 120L)
     }
 
     companion object {
