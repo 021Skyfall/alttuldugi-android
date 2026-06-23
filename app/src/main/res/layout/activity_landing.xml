@@ -53,7 +53,6 @@
         android:paddingBottom="14dp"
         android:text="@string/landing_start"
         android:textColor="@color/surface_background"
-        android:transitionName="@string/transition_home_cta"
         app:backgroundTint="@color/landing_button_bg"
         app:cornerRadius="18dp"
         app:rippleColor="@color/text_primary"

@@ -17,8 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="@string/home_add_line"
-        android:transitionName="@string/transition_home_cta" />
+        android:text="@string/home_add_line" />
 
     <TextView
         android:id="@+id/lineCountTextView"
@@ -65,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:gravity="center"
+        android:text="@string/home_empty_state"
         android:textAppearance="?attr/textAppearanceBodyMedium"
         android:textColor="@color/text_secondary" />
 

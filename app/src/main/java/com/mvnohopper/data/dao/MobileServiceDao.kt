@@ -15,8 +15,8 @@ interface MobileServiceDao {
     @Query("SELECT * FROM mobile_services ORDER BY activationDate DESC")
     fun getAll(): LiveData<List<MobileService>>
 
-    @Query("SELECT * FROM mobile_services WHERE id = :id")
-    suspend fun getById(id: Long): MobileService?
+    @Query("DELETE FROM mobile_services WHERE id IN (:ids)")
+    suspend fun deleteByIds(ids: List<Long>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(mobileService: MobileService): Long

@@ -22,11 +22,14 @@
         app:titleTextColor="@color/text_primary" />
 
     <ScrollView
+        android:id="@+id/formScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
+            android:id="@+id/formContentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -45,22 +48,23 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/operatorNameLayout"
-                style="@style/Widget.Alttuldugi.TextInputLayout"
+                style="@style/Widget.Alttuldugi.TextInputLayout.ExposedDropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
+                android:hint="@string/add_edit_operator_name"
                 app:endIconMode="dropdown_menu">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/operatorNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/add_edit_operator_name"
                     android:inputType="none"
                     android:paddingStart="12dp"
+                    android:paddingTop="20dp"
                     android:paddingEnd="12dp"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/input_hint" />
+                    android:paddingBottom="14dp"
+                    android:textColor="@color/text_primary" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -229,13 +233,16 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cancelButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:backgroundTint="@color/surface_card_alt"
+                    android:text="@string/common_cancel"
+                    android:textColor="@color/text_primary"
+                    app:backgroundTint="@android:color/transparent"
                     app:cornerRadius="18dp"
+                    app:rippleColor="@color/input_stroke"
                     app:strokeColor="@color/card_stroke"
-                    app:strokeWidth="1dp"
-                    android:text="@string/common_cancel" />
+                    app:strokeWidth="1dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveButton"

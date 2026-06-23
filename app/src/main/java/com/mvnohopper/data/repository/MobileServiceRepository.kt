@@ -9,7 +9,10 @@ class MobileServiceRepository(
 ) {
     fun getAll(): LiveData<List<MobileService>> = mobileServiceDao.getAll()
 
-    suspend fun getById(id: Long): MobileService? = mobileServiceDao.getById(id)
+    suspend fun deleteByIds(ids: Collection<Long>) {
+        if (ids.isEmpty()) return
+        mobileServiceDao.deleteByIds(ids.toList())
+    }
 
     suspend fun insert(mobileService: MobileService): Long = mobileServiceDao.insert(mobileService)
 

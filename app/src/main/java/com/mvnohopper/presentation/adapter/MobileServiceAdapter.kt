@@ -1,22 +1,13 @@
 package com.mvnohopper.presentation.adapter
 
-import android.app.DatePickerDialog
-import android.content.Context
-import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -24,9 +15,15 @@ import com.mvnohopper.R
 import com.mvnohopper.data.entity.MobileService
 import com.mvnohopper.databinding.ItemMobileServiceBinding
 import com.mvnohopper.domain.model.MobileServiceWithCalculations
+import com.mvnohopper.util.DateFormats
+import com.mvnohopper.util.OperatorOptions
+import com.mvnohopper.util.hideKeyboard
+import com.mvnohopper.util.parseIsoDateOrToday
+import com.mvnohopper.util.showDatePicker
+import com.mvnohopper.util.showKeyboard
+import com.mvnohopper.util.toBoldLabeledValueSpan
+import com.mvnohopper.util.toBoldMarkedSpan
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 class MobileServiceAdapter(
@@ -35,13 +32,6 @@ class MobileServiceAdapter(
 ) : ListAdapter<MobileServiceWithCalculations, MobileServiceAdapter.MobileServiceViewHolder>(DiffCallback) {
 
     private val selectedIds = linkedSetOf<Long>()
-    private val operatorOptions = listOf(
-        R.string.operator_option_kt,
-        R.string.operator_option_sk,
-        R.string.operator_option_lg
-    )
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MobileServiceViewHolder {
         val binding = ItemMobileServiceBinding.inflate(
@@ -79,6 +69,8 @@ class MobileServiceAdapter(
         private val binding: ItemMobileServiceBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var operatorAdapter: ArrayAdapter<String>? = null
+
         fun bind(item: MobileServiceWithCalculations, isSelected: Boolean) {
             val mobileService = item.mobileService
 
@@ -86,32 +78,36 @@ class MobileServiceAdapter(
             bindDisplayValues(item)
             bindSelection(mobileService.id, isSelected)
             bindInlineEditTriggers(item)
+
+            bindDismissOnly(
+                binding.promotionLabelTextView,
+                binding.recommendedLabelTextView,
+                binding.progressSummaryTextView
+            )
         }
 
         private fun bindDisplayValues(item: MobileServiceWithCalculations) {
             val mobileService = item.mobileService
+            val context = binding.root.context
+
             binding.operatorNameTextView.text = mobileService.operatorName
             binding.providerNameTextView.text = mobileService.providerName
             binding.planNameTextView.text = mobileService.planName
-            binding.activationDateTextView.text = binding.root.context.getString(
+            binding.activationDateTextView.text = context.getString(
                 R.string.home_activation_date,
                 mobileService.activationDate
             )
-            binding.promotionDateTextView.text = item.promotionEndDate.toString()
-            binding.recommendedDateTextView.text = item.recommendedReminderDate.toString()
-            binding.progressSummaryTextView.text = buildRemainingDaysText(
-                binding.root.context.getString(
-                    R.string.home_progress_summary,
-                    item.elapsedMonths,
-                    item.remainingPromotionDays
-                )
-            )
-            binding.alertDateTextView.text = buildBoldDateText(
-                binding.root.context.getString(
-                    R.string.home_alert_date,
-                    item.recommendedReminderDate.toString()
-                )
-            )
+            binding.promotionDateTextView.text = DateFormats.formatDate(item.promotionEndDate)
+            binding.recommendedDateTextView.text = DateFormats.formatDate(item.recommendedTerminationDate)
+            binding.progressSummaryTextView.text = context.getString(
+                R.string.home_progress_summary,
+                item.elapsedMonths,
+                item.remainingPromotionDays
+            ).toBoldMarkedSpan(context.getString(R.string.home_remaining_days_marker))
+            binding.alertDateTextView.text = context.getString(
+                R.string.home_alert_date,
+                DateFormats.formatDate(item.recommendedReminderDate)
+            ).toBoldLabeledValueSpan(context)
         }
 
         private fun bindSelection(id: Long, isSelected: Boolean) {
@@ -130,33 +126,6 @@ class MobileServiceAdapter(
         private fun bindInlineEditTriggers(item: MobileServiceWithCalculations) {
             val mobileService = item.mobileService
 
-            binding.root.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.contentContainer.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.headerSection.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.dateRowContainer.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.promotionCardContainer.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.recommendedCardContainer.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.progressSummaryTextView.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.promotionLabelTextView.setOnClickListener {
-                dismissInlineEditors()
-            }
-            binding.recommendedLabelTextView.setOnClickListener {
-                dismissInlineEditors()
-            }
             binding.operatorNameTextView.setOnClickListener {
                 dismissInlineEditors()
                 showOperatorEditor(mobileService)
@@ -168,12 +137,7 @@ class MobileServiceAdapter(
                     editText = binding.providerNameEditor,
                     initialValue = mobileService.providerName
                 ) { newValue ->
-                    onUpdateRequested(
-                        mobileService.copy(
-                            providerName = newValue,
-                            updatedAt = now()
-                        )
-                    )
+                    updateService(mobileService) { it.copy(providerName = newValue) }
                 }
             }
             binding.planNameTextView.setOnClickListener {
@@ -183,12 +147,7 @@ class MobileServiceAdapter(
                     editText = binding.planNameEditor,
                     initialValue = mobileService.planName
                 ) { newValue ->
-                    onUpdateRequested(
-                        mobileService.copy(
-                            planName = newValue,
-                            updatedAt = now()
-                        )
-                    )
+                    updateService(mobileService) { it.copy(planName = newValue) }
                 }
             }
             binding.activationDateTextView.setOnClickListener {
@@ -203,48 +162,49 @@ class MobileServiceAdapter(
                 dismissInlineEditors()
                 showAlertDatePicker(item)
             }
-            binding.recommendedDateTextView.setOnClickListener {
-                dismissInlineEditors()
+        }
+
+        private fun bindDismissOnly(vararg views: View) {
+            views.forEach { view ->
+                view.setOnClickListener { dismissInlineEditors() }
             }
         }
 
         private fun showOperatorEditor(mobileService: MobileService) {
+            val context = binding.root.context
             binding.operatorNameTextView.visibility = View.GONE
             binding.operatorNameEditor.visibility = View.VISIBLE
 
-            val adapter = ArrayAdapter(
-                binding.root.context,
+            val adapter = operatorAdapter ?: ArrayAdapter(
+                context,
                 R.layout.item_dropdown_operator,
-                operatorOptions.map { binding.root.context.getString(it) }
-            )
+                OperatorOptions.labels(context)
+            ).also { operatorAdapter = it }
+
             binding.operatorNameEditor.setAdapter(adapter)
             binding.operatorNameEditor.setText(mobileService.operatorName, false)
             binding.operatorNameEditor.requestFocus()
-            binding.operatorNameEditor.post {
-                binding.operatorNameEditor.showDropDown()
-            }
+            binding.operatorNameEditor.post { binding.operatorNameEditor.showDropDown() }
 
             binding.operatorNameEditor.setOnItemClickListener { _, _, position, _ ->
-                val newValue = binding.root.context.getString(operatorOptions[position])
-                hideKeyboard(binding.operatorNameEditor)
-                binding.operatorNameEditor.visibility = View.GONE
-                binding.operatorNameTextView.visibility = View.VISIBLE
+                val newValue = OperatorOptions.labels(context)[position]
+                binding.operatorNameEditor.hideKeyboard()
+                closeOperatorEditor()
                 if (newValue != mobileService.operatorName) {
-                    onUpdateRequested(
-                        mobileService.copy(
-                            operatorName = newValue,
-                            updatedAt = now()
-                        )
-                    )
+                    updateService(mobileService) { it.copy(operatorName = newValue) }
                 }
             }
 
             binding.operatorNameEditor.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    binding.operatorNameEditor.visibility = View.GONE
-                    binding.operatorNameTextView.visibility = View.VISIBLE
+                    closeOperatorEditor()
                 }
             }
+        }
+
+        private fun closeOperatorEditor() {
+            binding.operatorNameEditor.visibility = View.GONE
+            binding.operatorNameTextView.visibility = View.VISIBLE
         }
 
         private fun showTextEditor(
@@ -258,14 +218,14 @@ class MobileServiceAdapter(
             editText.setText(initialValue)
             editText.requestFocus()
             editText.setSelection(editText.text?.length ?: 0)
-            showKeyboard(editText)
+            editText.showKeyboard()
 
             var committed = false
 
             fun finishEditing(commitChanges: Boolean) {
                 if (committed) return
                 committed = true
-                hideKeyboard(editText)
+                editText.hideKeyboard()
 
                 val newValue = editText.text?.toString()?.trim().orEmpty()
                 if (commitChanges) {
@@ -309,86 +269,55 @@ class MobileServiceAdapter(
 
         private fun showPromotionDatePicker(item: MobileServiceWithCalculations) {
             val mobileService = item.mobileService
-            val currentDate = item.promotionEndDate
-
-            DatePickerDialog(
-                binding.root.context,
-                { _, year, month, dayOfMonth ->
-                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    val activationDate = selectedDate
-                        .plusDays(1)
-                        .minusMonths(mobileService.promotionMonths.toLong())
-
-                    onUpdateRequested(
-                        mobileService.copy(
-                            activationDate = activationDate.format(dateFormatter),
-                            updatedAt = now()
-                        )
-                    )
-                },
-                currentDate.year,
-                currentDate.monthValue - 1,
-                currentDate.dayOfMonth
-            ).show()
+            binding.root.context.showDatePicker(item.promotionEndDate) { selectedDate ->
+                val activationDate = selectedDate
+                    .plusDays(1)
+                    .minusMonths(mobileService.promotionMonths.toLong())
+                updateService(mobileService) {
+                    it.copy(activationDate = DateFormats.formatDate(activationDate))
+                }
+            }
         }
 
         private fun showActivationDatePicker(mobileService: MobileService) {
-            val currentDate = runCatching {
-                LocalDate.parse(mobileService.activationDate, dateFormatter)
-            }.getOrElse {
-                LocalDate.now()
+            val context = binding.root.context
+            context.showDatePicker(context.parseIsoDateOrToday(mobileService.activationDate)) { selectedDate ->
+                updateService(mobileService) {
+                    it.copy(activationDate = DateFormats.formatDate(selectedDate))
+                }
             }
-
-            DatePickerDialog(
-                binding.root.context,
-                { _, year, month, dayOfMonth ->
-                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    onUpdateRequested(
-                        mobileService.copy(
-                            activationDate = selectedDate.format(dateFormatter),
-                            updatedAt = now()
-                        )
-                    )
-                },
-                currentDate.year,
-                currentDate.monthValue - 1,
-                currentDate.dayOfMonth
-            ).show()
         }
 
         private fun showAlertDatePicker(item: MobileServiceWithCalculations) {
             val mobileService = item.mobileService
-            val currentDate = item.recommendedReminderDate
+            binding.root.context.showDatePicker(item.recommendedReminderDate) { selectedDate ->
+                val reminderDays = ChronoUnit.DAYS.between(
+                    selectedDate,
+                    item.recommendedTerminationDate
+                ).toInt()
 
-            DatePickerDialog(
-                binding.root.context,
-                { _, year, month, dayOfMonth ->
-                    val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                    val reminderDays = ChronoUnit.DAYS.between(
-                        selectedDate,
-                        item.recommendedTerminationDate
-                    ).toInt()
+                if (reminderDays < 0) {
+                    Toast.makeText(
+                        binding.root.context,
+                        binding.root.context.getString(R.string.home_alert_date_invalid),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@showDatePicker
+                }
 
-                    if (reminderDays < 0) {
-                        Toast.makeText(
-                            binding.root.context,
-                            binding.root.context.getString(R.string.home_alert_date_invalid),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        return@DatePickerDialog
-                    }
+                updateService(mobileService) {
+                    it.copy(reminderDaysBeforeEnd = reminderDays)
+                }
+            }
+        }
 
-                    onUpdateRequested(
-                        mobileService.copy(
-                            reminderDaysBeforeEnd = reminderDays,
-                            updatedAt = now()
-                        )
-                    )
-                },
-                currentDate.year,
-                currentDate.monthValue - 1,
-                currentDate.dayOfMonth
-            ).show()
+        private fun updateService(
+            mobileService: MobileService,
+            transform: (MobileService) -> MobileService
+        ) {
+            onUpdateRequested(
+                transform(mobileService).copy(updatedAt = DateFormats.nowIsoDateTime())
+            )
         }
 
         private fun dismissInlineEditors() {
@@ -399,76 +328,18 @@ class MobileServiceAdapter(
                 binding.planNameEditor.clearFocus()
             }
             if (binding.operatorNameEditor.visibility == View.VISIBLE) {
-                hideKeyboard(binding.operatorNameEditor)
+                binding.operatorNameEditor.hideKeyboard()
                 binding.operatorNameEditor.clearFocus()
-                binding.operatorNameEditor.visibility = View.GONE
-                binding.operatorNameTextView.visibility = View.VISIBLE
+                closeOperatorEditor()
             }
         }
 
         private fun resetInlineEditors() {
-            binding.operatorNameEditor.visibility = View.GONE
+            closeOperatorEditor()
             binding.providerNameEditor.visibility = View.GONE
             binding.planNameEditor.visibility = View.GONE
-            binding.operatorNameTextView.visibility = View.VISIBLE
             binding.providerNameTextView.visibility = View.VISIBLE
             binding.planNameTextView.visibility = View.VISIBLE
-        }
-
-        private fun buildBoldDateText(fullText: String): SpannableString {
-            val value = fullText.substringAfter(": ").ifBlank { fullText }
-            val start = fullText.indexOf(value)
-            val end = start + value.length
-            return SpannableString(fullText).apply {
-                if (start >= 0) {
-                    setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        start,
-                        end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                    setSpan(
-                        ForegroundColorSpan(
-                            ContextCompat.getColor(binding.root.context, R.color.text_primary)
-                        ),
-                        start,
-                        end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
-                }
-            }
-        }
-
-        private fun buildRemainingDaysText(fullText: String): SpannableString {
-            val marker = "남은 기간 "
-            val start = fullText.indexOf(marker)
-            if (start < 0) {
-                return SpannableString(fullText)
-            }
-            val valueStart = start + marker.length
-            val valueEnd = fullText.indexOf("일", valueStart).let {
-                if (it >= 0) it + 1 else fullText.length
-            }
-            return SpannableString(fullText).apply {
-                setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    valueStart,
-                    valueEnd,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
-
-        private fun now(): String = LocalDateTime.now().format(dateTimeFormatter)
-
-        private fun showKeyboard(editText: EditText) {
-            val imm = editText.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-        }
-
-        private fun hideKeyboard(view: View) {
-            val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 
@@ -476,15 +347,11 @@ class MobileServiceAdapter(
         override fun areItemsTheSame(
             oldItem: MobileServiceWithCalculations,
             newItem: MobileServiceWithCalculations
-        ): Boolean {
-            return oldItem.mobileService.id == newItem.mobileService.id
-        }
+        ): Boolean = oldItem.mobileService.id == newItem.mobileService.id
 
         override fun areContentsTheSame(
             oldItem: MobileServiceWithCalculations,
             newItem: MobileServiceWithCalculations
-        ): Boolean {
-            return oldItem == newItem
-        }
+        ): Boolean = oldItem == newItem
     }
 }

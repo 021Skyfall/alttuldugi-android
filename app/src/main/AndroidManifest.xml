@@ -18,7 +18,8 @@
         </activity>
         <activity
             android:name=".presentation.ui.add_edit.AddEditActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".presentation.ui.home.HomeActivity"
             android:exported="false" />

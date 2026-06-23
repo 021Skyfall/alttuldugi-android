@@ -1,27 +1,34 @@
 package com.mvnohopper.presentation.ui.add_edit
 
-import android.app.DatePickerDialog
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import com.mvnohopper.R
 import com.mvnohopper.data.entity.MobileService
 import com.mvnohopper.databinding.ActivityAddEditBinding
 import com.mvnohopper.presentation.viewmodel.AddEditViewModel
+import com.mvnohopper.util.Constants
+import com.mvnohopper.util.DateFormats
+import com.mvnohopper.util.OperatorOptions
+import com.mvnohopper.util.parseIsoDateOrToday
+import com.mvnohopper.util.showDatePicker
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class AddEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddEditBinding
     private val viewModel: AddEditViewModel by viewModels()
-    private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-    private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
+    private var baseFormContentPaddingBottom = 0
+    private val scrollToFocusedFieldRunnable = Runnable { scrollFocusedFieldIntoView() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,60 +40,116 @@ class AddEditActivity : AppCompatActivity() {
         setupDefaultValues()
         setupNumericFieldBehavior()
         setupListeners()
+        setupKeyboardScroll()
         observeViewModel()
+    }
+
+    private fun setupKeyboardScroll() {
+        baseFormContentPaddingBottom = binding.formContentLayout.paddingBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.formScrollView) { _, insets ->
+            val imeBottom = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom
+            binding.formContentLayout.updatePadding(bottom = baseFormContentPaddingBottom + imeBottom)
+            if (imeBottom > 0) {
+                scheduleScrollToFocusedField()
+            }
+            insets
+        }
+
+        registerAutoScrollOnFocus(binding.formContentLayout)
+    }
+
+    private fun registerAutoScrollOnFocus(parent: ViewGroup) {
+        for (index in 0 until parent.childCount) {
+            when (val child = parent.getChildAt(index)) {
+                is EditText -> wrapFocusListenerForAutoScroll(child)
+                is ViewGroup -> registerAutoScrollOnFocus(child)
+            }
+        }
+    }
+
+    private fun wrapFocusListenerForAutoScroll(editText: EditText) {
+        val existingListener = editText.onFocusChangeListener
+        editText.setOnFocusChangeListener { view, hasFocus ->
+            existingListener?.onFocusChange(view, hasFocus)
+            if (hasFocus) {
+                scheduleScrollToFocusedField()
+            }
+        }
+    }
+
+    private fun scheduleScrollToFocusedField() {
+        binding.formScrollView.removeCallbacks(scrollToFocusedFieldRunnable)
+        binding.formScrollView.postDelayed(scrollToFocusedFieldRunnable, 200)
+    }
+
+    private fun scrollFocusedFieldIntoView() {
+        val focusedView = binding.formScrollView.findFocus() ?: currentFocus ?: return
+        if (!isDescendantOf(focusedView, binding.formContentLayout)) return
+
+        val targetView = findScrollTarget(focusedView)
+        val scrollViewHeight = binding.formScrollView.height
+        if (scrollViewHeight <= 0) return
+
+        val extraMargin = (24 * resources.displayMetrics.density).toInt()
+        val targetScrollY = targetView.top - (scrollViewHeight - targetView.height) / 2 - extraMargin
+        val maxScrollY = (binding.formContentLayout.height - scrollViewHeight).coerceAtLeast(0)
+        binding.formScrollView.smoothScrollTo(0, targetScrollY.coerceIn(0, maxScrollY))
+    }
+
+    private fun findScrollTarget(view: View): View {
+        var current: View = view
+        var parent = current.parent
+        while (parent is View && parent != binding.formContentLayout) {
+            if (parent is TextInputLayout) {
+                return parent
+            }
+            current = parent
+            parent = parent.parent
+        }
+        return view
+    }
+
+    private fun isDescendantOf(view: View, ancestor: View): Boolean {
+        var parent = view.parent
+        while (parent is View) {
+            if (parent == ancestor) return true
+            parent = parent.parent
+        }
+        return false
     }
 
     private fun setupAppBar() {
         binding.toolbar.title = getString(R.string.add_edit_title)
         binding.toolbar.navigationContentDescription = getString(R.string.common_back)
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        binding.toolbar.setNavigationOnClickListener { finish() }
     }
 
     private fun setupDefaultValues() {
-        binding.operatorNameEditText.setText(
-            getString(R.string.operator_option_kt),
-            false
-        )
-        binding.activationDateEditText.setText(LocalDate.now().format(dateFormatter))
+        binding.operatorNameEditText.setText(getString(R.string.operator_option_kt), false)
+        binding.activationDateEditText.setText(DateFormats.formatDate(LocalDate.now()))
         binding.promotionMonthsEditText.setText("0")
         binding.minContractMonthsEditText.setText("0")
         binding.earlyTerminationFeeEditText.setText("0")
         binding.monthlyFeeEditText.setText("0")
-        binding.reminderDaysEditText.setText("15")
+        binding.reminderDaysEditText.setText(Constants.DEFAULT_REMINDER_DAYS.toString())
     }
 
     private fun setupListeners() {
-        binding.activationDateLayout.setEndIconOnClickListener {
-            showDatePicker()
-        }
-        binding.activationDateEditText.setOnClickListener {
-            showDatePicker()
-        }
+        binding.activationDateLayout.setEndIconOnClickListener { showDatePicker() }
+        binding.activationDateEditText.setOnClickListener { showDatePicker() }
         binding.activationDateEditText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                showDatePicker()
-            }
+            if (hasFocus) showDatePicker()
         }
-        binding.cancelButton.setOnClickListener {
-            finish()
-        }
-        binding.saveButton.setOnClickListener {
-            handleSave()
-        }
+        binding.cancelButton.setOnClickListener { finish() }
+        binding.saveButton.setOnClickListener { handleSave() }
     }
 
     private fun setupOperatorDropdown() {
-        val operatorOptions = listOf(
-            getString(R.string.operator_option_kt),
-            getString(R.string.operator_option_sk),
-            getString(R.string.operator_option_lg)
-        )
         val adapter = ArrayAdapter(
             this,
             R.layout.item_dropdown_operator,
-            operatorOptions
+            OperatorOptions.labels(this)
         )
         binding.operatorNameEditText.setAdapter(adapter)
     }
@@ -135,35 +198,27 @@ class AddEditActivity : AppCompatActivity() {
         viewModel.saveMobileService(buildMobileService())
     }
 
+    private fun requiredFields(): List<Pair<TextInputLayout, () -> String?>> = listOf(
+        binding.operatorNameLayout to { binding.operatorNameEditText.text?.toString() },
+        binding.providerNameLayout to { binding.providerNameEditText.text?.toString() },
+        binding.planNameLayout to { binding.planNameEditText.text?.toString() },
+        binding.activationDateLayout to { binding.activationDateEditText.text?.toString() },
+        binding.promotionMonthsLayout to { binding.promotionMonthsEditText.text?.toString() },
+        binding.minContractMonthsLayout to { binding.minContractMonthsEditText.text?.toString() },
+        binding.earlyTerminationFeeLayout to { binding.earlyTerminationFeeEditText.text?.toString() },
+        binding.monthlyFeeLayout to { binding.monthlyFeeEditText.text?.toString() },
+        binding.reminderDaysLayout to { binding.reminderDaysEditText.text?.toString() }
+    )
+
     private fun clearValidationErrors() {
-        binding.operatorNameLayout.error = null
-        binding.providerNameLayout.error = null
-        binding.planNameLayout.error = null
-        binding.activationDateLayout.error = null
-        binding.promotionMonthsLayout.error = null
-        binding.minContractMonthsLayout.error = null
-        binding.earlyTerminationFeeLayout.error = null
-        binding.monthlyFeeLayout.error = null
-        binding.reminderDaysLayout.error = null
+        requiredFields().forEach { (layout, _) -> layout.error = null }
     }
 
     private fun validateRequiredFields(): TextInputLayout? {
-        val validationTargets = listOf(
-            binding.operatorNameLayout to binding.operatorNameEditText.text?.toString(),
-            binding.providerNameLayout to binding.providerNameEditText.text?.toString(),
-            binding.planNameLayout to binding.planNameEditText.text?.toString(),
-            binding.activationDateLayout to binding.activationDateEditText.text?.toString(),
-            binding.promotionMonthsLayout to binding.promotionMonthsEditText.text?.toString(),
-            binding.minContractMonthsLayout to binding.minContractMonthsEditText.text?.toString(),
-            binding.earlyTerminationFeeLayout to binding.earlyTerminationFeeEditText.text?.toString(),
-            binding.monthlyFeeLayout to binding.monthlyFeeEditText.text?.toString(),
-            binding.reminderDaysLayout to binding.reminderDaysEditText.text?.toString()
-        )
-
         var firstInvalidLayout: TextInputLayout? = null
 
-        for ((layout, value) in validationTargets) {
-            if (value.isNullOrBlank()) {
+        for ((layout, valueProvider) in requiredFields()) {
+            if (valueProvider().isNullOrBlank()) {
                 layout.error = getString(R.string.add_edit_required_error)
                 if (firstInvalidLayout == null) {
                     firstInvalidLayout = layout
@@ -203,7 +258,7 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun buildMobileService(): MobileService {
-        val now = LocalDateTime.now().format(dateTimeFormatter)
+        val now = DateFormats.nowIsoDateTime()
 
         return MobileService(
             operatorName = binding.operatorNameEditText.text.toString().trim(),
@@ -222,21 +277,10 @@ class AddEditActivity : AppCompatActivity() {
     }
 
     private fun showDatePicker() {
-        val currentDate = runCatching {
-            LocalDate.parse(binding.activationDateEditText.text.toString(), dateFormatter)
-        }.getOrElse {
-            LocalDate.now()
+        showDatePicker(
+            parseIsoDateOrToday(binding.activationDateEditText.text.toString())
+        ) { selectedDate ->
+            binding.activationDateEditText.setText(DateFormats.formatDate(selectedDate))
         }
-
-        DatePickerDialog(
-            this,
-            { _, year, month, dayOfMonth ->
-                val selectedDate = LocalDate.of(year, month + 1, dayOfMonth)
-                binding.activationDateEditText.setText(selectedDate.format(dateFormatter))
-            },
-            currentDate.year,
-            currentDate.monthValue - 1,
-            currentDate.dayOfMonth
-        ).show()
     }
 }
